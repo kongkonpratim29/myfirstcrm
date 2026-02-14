@@ -1,7 +1,5 @@
 const { pool } = require('../config/database');
 const PDFDocument = require('pdfkit');
-const fs = require('fs');
-const path = require('path');
 
 // Generate unique invoice number
 const generateInvoiceNumber = async () => {

@@ -15,6 +15,12 @@ export const AuthProvider = ({ children }) => {
   const [user, setUser] = useState(null);
   const [loading, setLoading] = useState(true);
 
+  const logout = React.useCallback(() => {
+    localStorage.removeItem('token');
+    localStorage.removeItem('user');
+    setUser(null);
+  }, []);
+
   useEffect(() => {
     const initAuth = async () => {
       const token = localStorage.getItem('token');
@@ -38,7 +44,7 @@ export const AuthProvider = ({ children }) => {
     };
 
     initAuth();
-  }, []);
+  }, [logout]);
 
   const login = async (email, password) => {
     const response = await authAPI.login({ email, password });
@@ -60,12 +66,6 @@ export const AuthProvider = ({ children }) => {
     setUser(user);
     
     return response.data;
-  };
-
-  const logout = () => {
-    localStorage.removeItem('token');
-    localStorage.removeItem('user');
-    setUser(null);
   };
 
   const value = {

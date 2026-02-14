@@ -1,4 +1,4 @@
-import React, { useEffect, useState } from 'react';
+import React, { useEffect, useState, useCallback } from 'react';
 import { useParams, useNavigate } from 'react-router-dom';
 import { Box, Paper, Typography, Button, Grid, Chip, Divider, List, ListItem, ListItemText } from '@mui/material';
 import { ArrowBack } from '@mui/icons-material';
@@ -10,18 +10,18 @@ const DealDetail = () => {
   const navigate = useNavigate();
   const [deal, setDeal] = useState(null);
 
-  useEffect(() => {
-    fetchDeal();
-  }, [id]);
-
-  const fetchDeal = async () => {
+  const fetchDeal = useCallback(async () => {
     try {
       const response = await dealsAPI.getOne(id);
       setDeal(response.data.data);
     } catch (error) {
       toast.error('Failed to load deal');
     }
-  };
+  }, [id]);
+
+  useEffect(() => {
+    fetchDeal();
+  }, [fetchDeal]);
 
   if (!deal) return <Typography>Loading...</Typography>;
 

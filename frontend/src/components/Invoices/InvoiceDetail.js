@@ -1,4 +1,4 @@
-import React, { useEffect, useState } from 'react';
+import React, { useEffect, useState, useCallback } from 'react';
 import { useParams, useNavigate } from 'react-router-dom';
 import { Box, Paper, Typography, Button, Grid, Table, TableBody, TableCell, TableContainer, TableHead, TableRow, Divider, Chip } from '@mui/material';
 import { ArrowBack, PictureAsPdf } from '@mui/icons-material';
@@ -10,18 +10,18 @@ const InvoiceDetail = () => {
   const navigate = useNavigate();
   const [invoice, setInvoice] = useState(null);
 
-  useEffect(() => {
-    fetchInvoice();
-  }, [id]);
-
-  const fetchInvoice = async () => {
+  const fetchInvoice = useCallback(async () => {
     try {
       const response = await invoicesAPI.getOne(id);
       setInvoice(response.data.data);
     } catch (error) {
       toast.error('Failed to load invoice');
     }
-  };
+  }, [id]);
+
+  useEffect(() => {
+    fetchInvoice();
+  }, [fetchInvoice]);
 
   const handleDownloadPDF = async () => {
     try {

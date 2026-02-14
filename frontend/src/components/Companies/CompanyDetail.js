@@ -1,4 +1,4 @@
-import React, { useEffect, useState } from 'react';
+import React, { useEffect, useState, useCallback } from 'react';
 import { useParams, useNavigate } from 'react-router-dom';
 import { Box, Paper, Typography, Button, Grid, Divider, List, ListItem, ListItemText } from '@mui/material';
 import { ArrowBack } from '@mui/icons-material';
@@ -10,18 +10,18 @@ const CompanyDetail = () => {
   const navigate = useNavigate();
   const [company, setCompany] = useState(null);
 
-  useEffect(() => {
-    fetchCompany();
-  }, [id]);
-
-  const fetchCompany = async () => {
+  const fetchCompany = useCallback(async () => {
     try {
       const response = await companiesAPI.getOne(id);
       setCompany(response.data.data);
     } catch (error) {
       toast.error('Failed to load company');
     }
-  };
+  }, [id]);
+
+  useEffect(() => {
+    fetchCompany();
+  }, [fetchCompany]);
 
   if (!company) return <Typography>Loading...</Typography>;
 

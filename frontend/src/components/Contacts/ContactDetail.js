@@ -1,4 +1,4 @@
-import React, { useEffect, useState } from 'react';
+import React, { useEffect, useState, useCallback } from 'react';
 import { useParams, useNavigate } from 'react-router-dom';
 import {
   Box,
@@ -20,18 +20,18 @@ const ContactDetail = () => {
   const navigate = useNavigate();
   const [contact, setContact] = useState(null);
 
-  useEffect(() => {
-    fetchContact();
-  }, [id]);
-
-  const fetchContact = async () => {
+  const fetchContact = useCallback(async () => {
     try {
       const response = await contactsAPI.getOne(id);
       setContact(response.data.data);
     } catch (error) {
       toast.error('Failed to load contact details');
     }
-  };
+  }, [id]);
+
+  useEffect(() => {
+    fetchContact();
+  }, [fetchContact]);
 
   if (!contact) {
     return <Typography>Loading...</Typography>;
