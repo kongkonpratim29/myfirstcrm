@@ -269,6 +269,33 @@ The application supports three user roles:
 - CORS configuration
 - Secure environment variable handling
 
+### Security Recommendations for Production
+
+For production deployment, it's highly recommended to add:
+
+1. **Rate Limiting**: Install and configure `express-rate-limit` to prevent abuse:
+```bash
+npm install express-rate-limit
+```
+
+Example configuration in `server.js`:
+```javascript
+const rateLimit = require('express-rate-limit');
+
+const limiter = rateLimit({
+  windowMs: 15 * 60 * 1000, // 15 minutes
+  max: 100 // limit each IP to 100 requests per windowMs
+});
+
+app.use('/api/', limiter);
+```
+
+2. **Helmet**: Use `helmet` for setting security HTTP headers
+3. **HTTPS**: Always use HTTPS in production
+4. **Environment Variables**: Use strong, unique secrets for JWT and other sensitive data
+5. **Database Security**: Use database user with minimal required privileges
+6. **Regular Updates**: Keep all dependencies up to date
+
 ## 🎨 UI Features
 
 - Responsive design (mobile-friendly)
