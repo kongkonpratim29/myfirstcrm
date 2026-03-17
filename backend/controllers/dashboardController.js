@@ -18,6 +18,16 @@ const getDashboardStats = async (req, res) => {
       GROUP BY stage
     `);
 
+    // Total pipeline value (open deals) and total revenue (won deals)
+    const [totalPipelineValue] = await pool.query(`
+      SELECT SUM(value) as pipelineValue FROM deals 
+      WHERE stage NOT IN ('Closed', 'Payment Received', 'Project Completed')
+    `);
+    const [totalRevenue] = await pool.query(`
+      SELECT SUM(value) as revenue FROM deals 
+      WHERE stage IN ('Payment Received', 'Project Completed')
+    `);
+
     // Conversion from confirmed deal to paid deal.
     const [confirmedDeals] = await pool.query('SELECT COUNT(*) as count FROM deals WHERE stage = "Deal Confirmed"');
     const [paidDeals] = await pool.query('SELECT COUNT(*) as count FROM deals WHERE stage = "Payment Received"');
@@ -63,6 +73,8 @@ const getDashboardStats = async (req, res) => {
           deals: dealsCount[0].count,
           tasks: tasksCount[0].count
         },
+        totalPipelineValue: totalPipelineValue[0]?.pipelineValue || 0,
+        totalRevenue: totalRevenue[0]?.revenue || 0,
         dealsPipeline: dealsByStage,
         conversionRate,
         recentActivities,

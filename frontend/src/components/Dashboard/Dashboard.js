@@ -24,6 +24,8 @@ import {
   CalendarToday as CalendarTodayIcon,
   ExpandMore as ExpandMoreIcon,
   ExpandLess as ExpandLessIcon,
+  AttachMoney as MoneyIcon,
+  AccountBalance as RevenueIcon,
 } from '@mui/icons-material';
 import { Chart as ChartJS, ArcElement, CategoryScale, LinearScale, Title, Tooltip, Legend } from 'chart.js';
 import { Pie } from 'react-chartjs-2';
@@ -163,6 +165,14 @@ const Dashboard = () => {
     return <Typography>No data available</Typography>;
   }
 
+  const formatCurrency = (val) => {
+    const num = Number(val) || 0;
+    if (num >= 10000000) return `₹${(num / 10000000).toFixed(1)}Cr`;
+    if (num >= 100000) return `₹${(num / 100000).toFixed(1)}L`;
+    if (num >= 1000) return `₹${(num / 1000).toFixed(1)}K`;
+    return `₹${num.toFixed(0)}`;
+  };
+
   const StatCard = ({ title, value, icon, color }) => (
     <Card>
       <CardContent>
@@ -283,7 +293,7 @@ const Dashboard = () => {
       </Box>
 
       <Grid container spacing={3} sx={{ mb: 3 }}>
-        <Grid item xs={12} sm={6} md={3}>
+        <Grid item xs={12} sm={6} md={4}>
           <StatCard
             title="Total Contacts"
             value={stats.counts?.contacts || 0}
@@ -291,7 +301,7 @@ const Dashboard = () => {
             color="#1976d2"
           />
         </Grid>
-        <Grid item xs={12} sm={6} md={3}>
+        <Grid item xs={12} sm={6} md={4}>
           <StatCard
             title="Total Companies"
             value={stats.counts?.companies || 0}
@@ -299,7 +309,7 @@ const Dashboard = () => {
             color="#dc004e"
           />
         </Grid>
-        <Grid item xs={12} sm={6} md={3}>
+        <Grid item xs={12} sm={6} md={4}>
           <StatCard
             title="Active Deals"
             value={stats.counts?.deals || 0}
@@ -307,12 +317,28 @@ const Dashboard = () => {
             color="#ff9800"
           />
         </Grid>
-        <Grid item xs={12} sm={6} md={3}>
+        <Grid item xs={12} sm={6} md={4}>
           <StatCard
             title="Pending Tasks"
             value={stats.counts?.tasks || 0}
             icon={<TasksIcon fontSize="inherit" />}
             color="#4caf50"
+          />
+        </Grid>
+        <Grid item xs={12} sm={6} md={4}>
+          <StatCard
+            title="Pipeline Value"
+            value={formatCurrency(stats.totalPipelineValue)}
+            icon={<MoneyIcon fontSize="inherit" />}
+            color="#9c27b0"
+          />
+        </Grid>
+        <Grid item xs={12} sm={6} md={4}>
+          <StatCard
+            title="Total Revenue"
+            value={formatCurrency(stats.totalRevenue)}
+            icon={<RevenueIcon fontSize="inherit" />}
+            color="#00897b"
           />
         </Grid>
       </Grid>
